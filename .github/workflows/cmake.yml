@@ -21,6 +21,17 @@ jobs:
       shell: bash
       run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
+    - name: Cache apt packages
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/cache@v4
+      with:
+        path: |
+          /var/cache/apt/archives
+          /var/lib/apt/lists
+        key: ${{ runner.os }}-apt-${{ hashFiles('.github/workflows/cmake.yml') }}
+        restore-keys: |
+          ${{ runner.os }}-apt-
+
     - name: Prepare (ubuntu)
       run: |
            sudo apt-get update
